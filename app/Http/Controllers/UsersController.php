@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except'=>['show']]);
+    }
+
     /**
      * 用户中心
      * @param User $user
@@ -25,12 +31,15 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.edit', compact('user'));
     }
 
 
     public function update(Request $request, ImageUploadHandler $imageUploadHandler, User $user)
     {
+        $this->authorize('update', $user);
+
         $data = $request->all();
 
         //dd($request->file('avatar'));
