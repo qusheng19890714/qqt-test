@@ -42,4 +42,10 @@ class TopicsController extends Controller
 
         return redirect()->route('topics.show', $topic->id)->with('success', '帖子创建成功');
     }
+
+
+    public function show(Topic $topic)
+    {
+        return view('topics.show', compact('topic'));
+    }
 }
