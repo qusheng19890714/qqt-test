@@ -78,4 +78,24 @@ class TopicsController extends Controller
 
         return $data;
     }
+
+
+    /**
+     * 编辑
+     */
+    public function edit(Topic $topic)
+    {
+        $this->authorize('update', $topic);
+
+        $categories = Category::all();
+        return view('topics.create_and_edit', compact('topic', 'categories'));
+    }
+
+    public function update(TopicRequest $request, Topic $topic)
+    {
+        $this->authorize('update', $topic);
+        $topic->update($request->all());
+
+        return redirect()->route('topics.show', $topic->id)->with('success', '更新成功！');
+    }
 }
