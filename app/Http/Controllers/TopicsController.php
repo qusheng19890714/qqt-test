@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\TopicRequest;
 use App\Models\Category;
 use App\Models\Topic;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class TopicsController extends Controller
 {
@@ -47,5 +48,34 @@ class TopicsController extends Controller
     public function show(Topic $topic)
     {
         return view('topics.show', compact('topic'));
+    }
+
+    /**
+     * 编辑器上传图片
+     * @param Request            $request
+     * @param ImageUploadHandler $imageUploadHandler
+     */
+    public function uploadImage(Request $request, ImageUploadHandler $imageUploadHandler)
+    {
+        $data = [
+
+            'success'=>false,
+            'msg' => '上传失败',
+            'file_path' => '',
+        ];
+
+        if ($request->upload_file) {
+
+            $result = $imageUploadHandler->save($request->upload_file, 'topics', Auth::id(), '1024');
+
+            // 图片保存成功的话
+            if ($result) {
+                $data['file_path'] = $result['path'];
+                $data['msg']       = "上传成功!";
+                $data['success']   = true;
+            }
+        }
+
+        return $data;
     }
 }
