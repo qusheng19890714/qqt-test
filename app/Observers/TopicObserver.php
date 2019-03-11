@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Topic;
 use App\Handlers\SlugTranslateHandler;
+use App\Jobs\TranslateSlug;
 
 class TopicObserver
 {
@@ -14,14 +15,17 @@ class TopicObserver
         //防止xss攻击
         $topic->body = clean($topic->body, 'user_topic_body');
 
+
+    }
+
+    public function saved(Topic $topic)
+    {
         //slug
         if (!$topic->slug) {
 
-            $topic->slug = app(SlugTranslateHandler::class)->translate($topic->title);
+            //推送翻译队列
+            dispatch(new TranslateSlug($topic));
 
-            if (trim($topic->slug) === 'edit') {
-                $topic->slug = 'edit-slug';
-            }
         }
     }
 }
