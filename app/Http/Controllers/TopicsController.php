@@ -91,11 +91,26 @@ class TopicsController extends Controller
         return view('topics.create_and_edit', compact('topic', 'categories'));
     }
 
+    /**
+     * 修改
+     * @param TopicRequest $request
+     * @param Topic        $topic
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(TopicRequest $request, Topic $topic)
     {
         $this->authorize('update', $topic);
         $topic->update($request->all());
 
         return redirect()->route('topics.show', $topic->id)->with('success', '更新成功！');
+    }
+
+    public function destroy(Topic $topic)
+    {
+        $this->authorize('destroy', $topic);
+
+        $topic->delete();
+
+        return redirect()->route('topics.index')->with('succeess', '删除成功');
     }
 }
