@@ -43,5 +43,8 @@ Route::resource('topics', 'TopicsController', ['only'=>['index', 'create', 'stor
 Route::get('topics/{topic}/{slug?}', 'TopicsController@show')->name('topics.show');
 Route::post('upload_image', 'TopicsController@uploadImage')->name('topics.upload_image');
 
+//回复
+Route::resource('replies', 'RepliesController', ['only' => ['store', 'destroy']]);
+
 //分类
 Route::resource('categories', 'CategoriesController', ['only'=>['show']]);
