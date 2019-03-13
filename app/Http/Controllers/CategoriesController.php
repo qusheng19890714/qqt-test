@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
 {
-    public function show(Request $request, Topic $topic, Category $category)
+    public function show(Request $request, Topic $topic, Category $category, User $user)
     {
         $topics = $topic->withOrder($request->order)->where('category_id', $category->id)->paginate(20);
 
-        return view('topics.index', compact('topics', 'category'));
+        // 活跃用户列表
+        $active_users = $user->getActiveUsers();
+
+        return view('topics.index', compact('topics', 'category', 'active_users'));
     }
 }
