@@ -2,15 +2,20 @@
 
 namespace App\Admin\Controllers;
 
-use App\Models\User;
+use App\Admin\Extensions\Export\TopicExcelExport;
+use App\Admin\Extensions\Tools\TopicCategory;
+use App\Models\Category;
+use App\Models\Topic;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\Request;
 
-class UsersController extends Controller
+class TopicsController extends Controller
 {
     use HasResourceActions;
 
@@ -22,6 +27,7 @@ class UsersController extends Controller
      */
     public function index(Content $content)
     {
+
         return $content
             ->header('Index')
             ->description('description')
@@ -79,21 +85,33 @@ class UsersController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new User);
+        $grid = new Grid(new Topic);
 
         $grid->id('Id')->sortable();
-        $grid->column('name', '用户名');
-        $grid->column('email', '邮箱');
-        $grid->column('avatar', '头像')->image('', 50,50);
-        $grid->column('created_at', '注册时间');
+        $grid->column('title', '话题名称')->editable('textarea');
+        $grid->column('user.name', '用户名');
+        $grid->column('category.name', '分类名称');
+        $grid->order('排序');
+        $grid->created_at('创建时间')->sortable();
+        $grid->column('content', '内容');
 
-        $grid->filter(function($filter) {
+        //时间筛选
+        $grid->filter(function($filter)  {
 
-            $filter->between('created_at', '注册时间')->datetime();
-            $filter->like('name', '用户名');
-            $filter->like('email', '邮箱');
+            //创建时间查询
+            $filter->between('creatd_at', '创建时间')->datetime();
+
+            //话题分类查询
+            $categories = Category::all()->pluck('name', 'id');
+            $filter->equal('category_id',  '话题分类')->select($categories);
+
 
         });
+
+        //关闭导出
+        $grid->disableExport();
+
+
         return $grid;
     }
 
@@ -105,19 +123,21 @@ class UsersController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(User::findOrFail($id));
+        $show = new Show(Topic::findOrFail($id));
 
         $show->id('Id');
-        $show->name('Name');
-        $show->email('Email');
-        $show->email_verified_at('Email verified at');
-        $show->password('Password');
-        $show->remember_token('Remember token');
+        $show->title('Title');
+        $show->body('Body');
+        $show->user_id('User id');
+        $show->category_id('Category id');
+        $show->reply_count('Reply count');
+        $show->view_count('View count');
+        $show->last_reply_user_id('Last reply user id');
+        $show->order('Order');
+        $show->excerpt('Excerpt');
+        $show->slug('Slug');
         $show->created_at('Created at');
         $show->updated_at('Updated at');
-        $show->avatar('Avatar');
-        $show->introduction('Introduction');
-        $show->notification_count('Notification count');
 
         return $show;
     }
@@ -129,16 +149,18 @@ class UsersController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new User);
+        $form = new Form(new Topic);
 
-        $form->text('name', 'Name');
-        $form->email('email', 'Email');
-        $form->datetime('email_verified_at', 'Email verified at')->default(date('Y-m-d H:i:s'));
-        $form->password('password', 'Password');
-        $form->text('remember_token', 'Remember token');
-        $form->image('avatar', 'Avatar');
-        $form->text('introduction', 'Introduction');
-        $form->number('notification_count', 'Notification count');
+        $form->text('title', 'Title');
+        $form->textarea('body', 'Body');
+        $form->number('user_id', 'User id');
+        $form->number('category_id', 'Category id');
+        $form->number('reply_count', 'Reply count');
+        $form->number('view_count', 'View count');
+        $form->number('last_reply_user_id', 'Last reply user id');
+        $form->number('order', 'Order');
+        $form->textarea('excerpt', 'Excerpt');
+        $form->text('slug', 'Slug');
 
         return $form;
     }

@@ -48,14 +48,21 @@ class HomeController extends Controller
             ['text' => '编辑用户']
         );
 
-        // 填充页面body部分，这里可以填入任何可被渲染的对象
-        $content->body('hello world');
+        $content->row(function(Row $row) {
 
-        // 在body中添加另一段内容
-        $content->body('foo bar');
+            $row->column(4, 'xxxx');
+            $row->column(8, function(Column $column) {
 
-        // `row`是`body`方法的别名
-        $content->row('hello world');
+                $column->row('111');
+                $column->row('222');
+                $column->row(function(Row $row) {
+
+                    $row->column(6, '333');
+                    $row->column(6, '444');
+                });
+            });
+
+        });
 
         return $content;
 
