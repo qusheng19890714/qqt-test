@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Extensions\Export\UserExcelExport;
+use App\Admin\Extensions\Tools\UsersHeader;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -56,8 +57,8 @@ class UsersController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('编辑')
+            ->description('编辑用户信息')
             ->breadcrumb(['text'=>'用户管理', 'url'=>'/admin/users'], ['text'=>'编辑'])
             ->body($this->form()->edit($id));
     }
@@ -93,6 +94,7 @@ class UsersController extends Controller
         $grid->column('avatar', '头像')->image('', 50,50);
         $grid->column('created_at', '注册时间');
 
+
         //查询
         $grid->filter(function($filter) {
 
@@ -118,13 +120,13 @@ class UsersController extends Controller
         //excel导出数据
         $grid->exporter(new UserExcelExport());
 
-        $grid->footer(function($query) {
+        //添加今日注册人数的自定义工具
+        $grid->tools(function($tools){
 
-            $count = $query->all()->count();
-
-            return "<div style='padding: 10px;'>用户数量 ： $count</div>";
+            $tools->append(new UsersHeader());
 
         });
+
         return $grid;
     }
 
@@ -162,14 +164,12 @@ class UsersController extends Controller
     {
         $form = new Form(new User);
 
-        $form->text('name', 'Name');
+        $form->text('name', '用户名');
         $form->email('email', 'Email');
-        $form->datetime('email_verified_at', 'Email verified at')->default(date('Y-m-d H:i:s'));
-        $form->password('password', 'Password');
-        $form->text('remember_token', 'Remember token');
-        $form->image('avatar', 'Avatar');
-        $form->text('introduction', 'Introduction');
-        $form->number('notification_count', 'Notification count');
+        $form->text('tel', '手机号');
+        //$form->password('password', '密码');
+        $form->image('avatar', '头像');
+        $form->text('introduction', '介绍');
 
         return $form;
     }

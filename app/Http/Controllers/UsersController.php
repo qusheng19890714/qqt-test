@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Handlers\ImageUploadHandler;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class UsersController extends Controller
     }
 
 
-    public function update(Request $request, ImageUploadHandler $imageUploadHandler, User $user)
+    public function update(UserRequest $request, ImageUploadHandler $imageUploadHandler, User $user)
     {
         $this->authorize('update', $user);
 
