@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Extensions\Export\UserExcelExport;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -23,8 +24,9 @@ class UsersController extends Controller
     public function index(Content $content)
     {
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('用户管理')
+            ->description('用户的相关信息')
+            ->breadcrumb(['text' => '用户管理']) //面包屑
             ->body($this->grid());
     }
 
@@ -37,6 +39,7 @@ class UsersController extends Controller
      */
     public function show($id, Content $content)
     {
+
         return $content
             ->header('Detail')
             ->description('description')
@@ -55,6 +58,7 @@ class UsersController extends Controller
         return $content
             ->header('Edit')
             ->description('description')
+            ->breadcrumb(['text'=>'用户管理', 'url'=>'/admin/users'], ['text'=>'编辑'])
             ->body($this->form()->edit($id));
     }
 
@@ -81,17 +85,44 @@ class UsersController extends Controller
     {
         $grid = new Grid(new User);
 
+        //列数据
         $grid->id('Id')->sortable();
         $grid->column('name', '用户名');
         $grid->column('email', '邮箱');
+        $grid->column('tel', '手机号码');
         $grid->column('avatar', '头像')->image('', 50,50);
         $grid->column('created_at', '注册时间');
 
+        //查询
         $grid->filter(function($filter) {
 
-            $filter->between('created_at', '注册时间')->datetime();
-            $filter->like('name', '用户名');
-            $filter->like('email', '邮箱');
+            // 去掉默认的id过滤器
+            $filter->disableIdFilter();
+
+            $filter->column(1/2, function($filter) {
+
+                $filter->equal('tel', '手机');
+                $filter->between('created_at', '注册时间')->datetime();
+            });
+
+            $filter->column(1/2, function($filter) {
+
+
+                $filter->like('name', '用户名');
+                $filter->like('email', '邮箱');
+
+            });
+
+        });
+
+        //excel导出数据
+        $grid->exporter(new UserExcelExport());
+
+        $grid->footer(function($query) {
+
+            $count = $query->all()->count();
+
+            return "<div style='padding: 10px;'>用户数量 ： $count</div>";
 
         });
         return $grid;
