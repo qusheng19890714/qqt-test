@@ -164,12 +164,26 @@ class UsersController extends Controller
     {
         $form = new Form(new User);
 
-        $form->text('name', '用户名');
-        $form->email('email', 'Email');
-        $form->text('tel', '手机号');
-        //$form->password('password', '密码');
-        $form->image('avatar', '头像');
-        $form->text('introduction', '介绍');
+        $form->text('name', '用户名')->rules('required|string|max:255');
+        $form->email('email', 'Email')->rules('required|email|string|max:255|unique:users');
+        $form->mobile('tel', '手机号')->rules('required|numeric|unique:users')->options(['mask' => '999 9999 9999']);
+        $form->password('password', '密码')->rules('required');
+        $form->image('avatar', '头像')->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208')->help('头像必须是 jpeg, bmp, png, gif 格式的图片');
+        $form->editor('introduction', '简介');
+
+
+        //底部
+        $form->footer(function($footer){
+
+            //去掉"查看"checkbox
+            $footer->disableViewCheck();
+            //去掉"继续编辑"checkbox
+            $footer->disableEditingCheck();
+            //去掉"继续创建"checkbox
+            $footer->disableCreatingCheck();
+
+        });
+
 
         return $form;
     }

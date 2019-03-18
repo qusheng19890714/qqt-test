@@ -14,7 +14,7 @@ class TopicsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth', ['except' => ['index', 'show', 'uploadImage']]);
     }
 
     public function index(Request $request, Topic $topic, User $user)
@@ -72,19 +72,51 @@ class TopicsController extends Controller
             'file_path' => '',
         ];
 
-        if ($request->upload_file) {
+        $wang_data = [
 
-            $result = $imageUploadHandler->save($request->upload_file, 'topics', Auth::id(), '1024');
+            'errno' => 0,
+            'data'  => [],
 
-            // 图片保存成功的话
-            if ($result) {
-                $data['file_path'] = $result['path'];
-                $data['msg']       = "上传成功!";
-                $data['success']   = true;
+        ];
+
+        //Simditor编辑器
+        if ($request->hasFile('upload_file')) {
+
+            if ($request->upload_file) {
+
+                $result = $imageUploadHandler->save($request->upload_file, 'topics', Auth::id(), '1024');
+
+                // 图片保存成功的话
+                if ($result) {
+                    $data['file_path'] = $result['path'];
+                    $data['msg']       = "上传成功!";
+                    $data['success']   = true;
+                    $data['data'][]    = $result['path'];
+                }
             }
+
+            return $data;
+
         }
 
-        return $data;
+        //wangeditor编辑器
+        if ($request->hasFile('wang_upload_file')) {
+
+            if ($request->wang_upload_file) {
+
+                $result = $imageUploadHandler->save($request->wang_upload_file, 'topics', Auth::id(), '1024');
+
+                // 图片保存成功的话
+                if ($result) {
+                    $wang_data['errno']     = 0;
+                    $wang_data['data'][]    = $result['path'];
+                }
+            }
+
+            return $wang_data;
+
+        }
+
     }
 
 
