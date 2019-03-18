@@ -169,7 +169,7 @@ class UsersController extends Controller
         $form->mobile('tel', '手机号')->rules('required|numeric|unique:users')->options(['mask' => '999 9999 9999']);
         $form->password('password', '密码')->rules('required');
         $form->image('avatar', '头像')->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208')->help('头像必须是 jpeg, bmp, png, gif 格式的图片');
-        $form->editor('introduction', '简介');
+        $form->simditor('introduction', '简介');
 
 
         //底部
