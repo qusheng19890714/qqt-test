@@ -17,7 +17,7 @@ class UsersController extends Controller
     use HasResourceActions;
 
     /**
-     * Index interface.
+     * 用户列表
      *
      * @param Content $content
      * @return Content
@@ -32,7 +32,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Show interface.
+     * 用户详情
      *
      * @param mixed $id
      * @param Content $content
@@ -42,13 +42,14 @@ class UsersController extends Controller
     {
 
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('详情')
+            ->description('用户详情信息')
+            ->breadcrumb(['text'=>'用户管理', 'url'=>'/admin/users'], ['text'=>'详情'])
             ->body($this->detail($id));
     }
 
     /**
-     * Edit interface.
+     * 用户编辑
      *
      * @param mixed $id
      * @param Content $content
@@ -64,7 +65,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Create interface.
+     * 新增用户
      *
      * @param Content $content
      * @return Content
@@ -78,7 +79,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Make a grid builder.
+     * 列表数据处理
      *
      * @return Grid
      */
@@ -140,23 +141,24 @@ class UsersController extends Controller
     {
         $show = new Show(User::findOrFail($id));
 
-        $show->id('Id');
-        $show->name('Name');
+        $show->name('用户名');
         $show->email('Email');
-        $show->email_verified_at('Email verified at');
-        $show->password('Password');
-        $show->remember_token('Remember token');
-        $show->created_at('Created at');
-        $show->updated_at('Updated at');
-        $show->avatar('Avatar');
-        $show->introduction('Introduction');
-        $show->notification_count('Notification count');
+
+        $show->tel('手机号')->as(function($tel) {
+            return $tel? $tel : '无';
+        });
+
+        $show->email_verified_at('邮箱验证时间');
+        $show->created_at('创建时间');
+        $show->updated_at('最后修改时间');
+        $show->avatar('头像')->image();
+        $show->introduction('简介');
 
         return $show;
     }
 
     /**
-     * Make a form builder.
+     * 添加用户的数据处理
      *
      * @return Form
      */
@@ -169,7 +171,7 @@ class UsersController extends Controller
         $form->mobile('tel', '手机号')->rules('required|numeric|unique:users')->options(['mask' => '999 9999 9999']);
         $form->password('password', '密码')->rules('required');
         $form->image('avatar', '头像')->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208')->help('头像必须是 jpeg, bmp, png, gif 格式的图片');
-        $form->simditor('introduction', '简介');
+        $form->text('introduction', '简介');
 
 
         //底部
