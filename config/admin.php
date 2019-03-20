@@ -11,7 +11,7 @@ return [
     | login page.
     |
     */
-    'name' => 'LaraBBS 后台管理系统',
+    'name' => '后台管理系统',
 
     /*
     |--------------------------------------------------------------------------
@@ -251,7 +251,7 @@ return [
     | This value is used to set the background image of login page.
     |
     */
-    'login_background_image' => '',
+    'login_background_image' => '/image/background-blur-clean-531880.jpg',
 
     /*
     |--------------------------------------------------------------------------

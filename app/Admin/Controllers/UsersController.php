@@ -11,6 +11,9 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Tab;
+use Illuminate\Support\Facades\Hash;
+
 
 class UsersController extends Controller
 {
@@ -57,11 +60,13 @@ class UsersController extends Controller
      */
     public function edit($id, Content $content)
     {
+
         return $content
             ->header('编辑')
             ->description('编辑用户信息')
             ->breadcrumb(['text'=>'用户管理', 'url'=>'/admin/users'], ['text'=>'编辑'])
             ->body($this->form()->edit($id));
+
     }
 
     /**
@@ -73,8 +78,8 @@ class UsersController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('创建新用户')
+            ->description('创建一个新的用户')
             ->body($this->form());
     }
 
@@ -166,25 +171,71 @@ class UsersController extends Controller
     {
         $form = new Form(new User);
 
-        $form->text('name', '用户名')->rules('required|string|max:255');
-        $form->email('email', 'Email')->rules('required|email|string|max:255|unique:users');
-        $form->mobile('tel', '手机号')->rules('required|numeric|unique:users')->options(['mask' => '999 9999 9999']);
-        $form->password('password', '密码')->rules('required');
-        $form->image('avatar', '头像')->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208')->help('头像必须是 jpeg, bmp, png, gif 格式的图片');
-        $form->text('introduction', '简介');
+        $form->tab('基本信息', function($form) {
+
+            $form->text('name', '用户名')->rules('required|string|max:255');
+
+            $form->email('email', 'Email')->rules(function($form)  {
+
+                if (!$id = $form->model()->id) {
+
+                    return 'required|email|string|max:255|unique:users,email';
+                }
+
+                return 'required|email|string|max:255|unique:users,email,'. $form->model()->id;
+
+            });
+
+            $form->mobile('tel', '手机号')->rules(function($form) {
+
+                if (!$id = $form->model()->id) {
+
+                    return 'required|string|max:255|unique:users,tel';
+                }
+
+                return 'required|string|max:255|unique:users,tel,'.$form->model()->id;
+
+            })->options(['mask' => '999 9999 9999']);
 
 
-        //底部
-        $form->footer(function($footer){
+            $form->password('password','密码');
+            $form->image('avatar', '头像')->rules('mimes:jpeg,bmp,png,gif|dimensions:min_width=208,min_height=208')->help('头像必须是 jpeg, bmp, png, gif 格式的图片');
+            $form->text('introduction', '简介');
 
-            //去掉"查看"checkbox
-            $footer->disableViewCheck();
-            //去掉"继续编辑"checkbox
-            $footer->disableEditingCheck();
-            //去掉"继续创建"checkbox
-            $footer->disableCreatingCheck();
+
+            //底部
+            $form->footer(function($footer){
+
+                //去掉"查看"checkbox
+                $footer->disableViewCheck();
+                //去掉"继续编辑"checkbox
+                $footer->disableEditingCheck();
+                //去掉"继续创建"checkbox
+                $footer->disableCreatingCheck();
+
+            });
+
 
         });
+
+
+        $form->saving(function(Form $form) {
+
+            //密码加密
+            if ($form->password && $form->model()->password != $form->password) {
+
+                $form->password = bcrypt($form->password);
+            }
+
+            //如果用户没有输入密码, 则不更新密码字段
+            if (!$form->password) {
+
+                $form->password =$form->model()->password;
+            }
+
+
+        });
+
 
 
         return $form;
