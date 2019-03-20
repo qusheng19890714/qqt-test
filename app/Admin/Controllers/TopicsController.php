@@ -111,6 +111,14 @@ class TopicsController extends Controller
         //关闭导出
         $grid->disableExport();
 
+        //添加文章评论的按钮
+        $grid->actions(function($actions) {
+
+            $id = $actions->getKey();
+
+            $actions->append('<a href="'.route('topic.reply', $id).'"><i class="fa fa-comment"></i></a>');
+        });
+
 
         return $grid;
     }

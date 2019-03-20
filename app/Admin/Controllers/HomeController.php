@@ -3,68 +3,54 @@
 namespace App\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Reply;
+use App\Models\Topic;
+use App\Models\User;
 use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
+use Encore\Admin\Widgets\InfoBox;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
+    //数据统计
     public function index(Content $content)
     {
+
         return $content
-            ->header('Dashboard')
-            ->description('Description...')
-            ->row(Dashboard::title())
+            ->header('今日数据统计')
+            ->description(date('Y-m-d'))
             ->row(function (Row $row) {
 
-                $row->column(4, function (Column $column) {
-                    $column->append(Dashboard::environment());
+                //今日新增用户
+                $row->column(4, function (Column $column)  {
+
+                    //今日注册人数
+                    $new_user_count = User::where('created_at', '>', Carbon::today())->count();
+
+                    $column->append(new InfoBox('注册人数', 'users', 'aqua', 'users', $new_user_count));
+
                 });
 
                 $row->column(4, function (Column $column) {
-                    $column->append(Dashboard::extensions());
+
+                    //今日话题数量
+                    $new_topic_count = Topic::where('created_at', '>', Carbon::today())->count();
+
+                    $column->append(new InfoBox('话题数量', 'copy', 'green', 'topics', $new_topic_count));
                 });
 
                 $row->column(4, function (Column $column) {
-                    $column->append(Dashboard::dependencies());
+
+                    //今日评论数量
+                    $new_reply_count = Reply::where('created_at', '>', Carbon::today())->count();
+
+                    $column->append(new InfoBox('评论数量', 'comment', 'yellow', '', $new_reply_count));
                 });
             });
     }
 
-    //测试
-    public function test(Content $content)
-    {
-        // 选填
-        $content->header('填写页面头标题');
 
-        // 选填
-        $content->description('填写页面描述小标题');
-
-        // 添加面包屑导航 since v1.5.7
-        $content->breadcrumb(
-            ['text' => '首页', 'url' => '/admin'],
-            ['text' => '用户管理', 'url' => '/admin/users'],
-            ['text' => '编辑用户']
-        );
-
-        $content->row(function(Row $row) {
-
-            $row->column(4, 'xxxx');
-            $row->column(8, function(Column $column) {
-
-                $column->row('111');
-                $column->row('222');
-                $column->row(function(Row $row) {
-
-                    $row->column(6, '333');
-                    $row->column(6, '444');
-                });
-            });
-
-        });
-
-        return $content;
-
-    }
 }

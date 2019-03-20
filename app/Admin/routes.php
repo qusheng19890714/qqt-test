@@ -16,5 +16,7 @@ Route::group([
     $router->resource('topics', TopicsController::class);
     $router->resource('categories', CategoriesController::class);
 
+    $router->get('topic/{id}/replies', 'RepliesController@replies')->name('topic.reply');
+
 });
 
