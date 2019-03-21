@@ -6,6 +6,7 @@ use App\Admin\Extensions\Export\UserExcelExport;
 use App\Admin\Extensions\Tools\UsersHeader;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -233,6 +234,7 @@ class UsersController extends Controller
                 $form->password =$form->model()->password;
             }
 
+            $form->email_verified_at = Carbon::now()->toDateTimeString();
 
         });
 

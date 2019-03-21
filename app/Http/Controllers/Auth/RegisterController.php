@@ -52,7 +52,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'tel'      => ['reqired', 'number', 'unique:users'],
+            'tel'      => ['required', 'unique:users'],
             'captcha' => ['required', 'captcha']
         ],[
             'captcha.required' => '验证码不能为空',
