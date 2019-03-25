@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\CaptchaRequest;
+use Carbon\Carbon;
 use Gregwar\Captcha\CaptchaBuilder;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Controller;
 
 class CaptchasController extends Controller
 {
     //图形验证码
     public function store(CaptchaRequest $request, CaptchaBuilder $captchaBuilder)
     {
+        dd(Carbon::now());
         $key = 'captcha-'.str_random(15);
 
         //手机号码
@@ -30,6 +32,6 @@ class CaptchasController extends Controller
             'captcha_content' =>$captcha->inline(),
         ];
 
-        return $this->response->array($result)->setCode(201);
+        return $this->response->array($result)->setStatusCode(201);
     }
 }

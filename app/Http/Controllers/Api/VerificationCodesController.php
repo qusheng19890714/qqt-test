@@ -20,7 +20,7 @@ class VerificationCodesController extends Controller
             return $this->response->error('验证码已经失效', 422);
         }
 
-        if (!hash_equals($captchaData['captcha'], $request->captcha_content)) {
+        if (!hash_equals($captchaData['captcha'], $request->captcha_code)) {
 
             //验证码错误就清除缓存
             \Cache::forget($request->captcha_key);
