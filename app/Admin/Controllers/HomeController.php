@@ -30,7 +30,7 @@ class HomeController extends Controller
                     //今日注册人数
                     $new_user_count = User::where('created_at', '>', Carbon::today())->count();
 
-                    $column->append(new InfoBox('注册人数', 'users', 'aqua', 'users', $new_user_count));
+                    $column->append(new InfoBox('注册人数', 'users', 'aqua', 'admin/users', $new_user_count));
 
                 });
 
@@ -39,7 +39,7 @@ class HomeController extends Controller
                     //今日话题数量
                     $new_topic_count = Topic::where('created_at', '>', Carbon::today())->count();
 
-                    $column->append(new InfoBox('话题数量', 'copy', 'green', 'topics', $new_topic_count));
+                    $column->append(new InfoBox('话题数量', 'copy', 'green', 'admin/topics', $new_topic_count));
                 });
 
                 $row->column(4, function (Column $column) {
