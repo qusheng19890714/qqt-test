@@ -22,6 +22,12 @@ class EventServiceProvider extends ServiceProvider
         \Illuminate\Auth\Events\Verified::class => [
             \App\Listeners\EmailVerified::class,
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class =>[
+
+            'SocialiteProviders\Weixin\WeixinExtendSocialite@handle'
+        ]
+
+
     ];
 
     /**
