@@ -13,7 +13,23 @@ class VerificationCodesController extends Controller
     //发送验证码
     public function store(VerificationCodeRequest $request, EasySms $easySms)
     {
-        $tel = $request->tel;
+        $captchaData = \Cache::get($request->captcha_key);
+
+        if (!$captchaData) {
+
+            return $this->response->error('验证码已经失效', 422);
+        }
+
+        if (!hash_equals($captchaData['captcha'], $request->captcha_content)) {
+
+            //验证码错误就清除缓存
+            \Cache::forget($request->captcha_key);
+
+            return $this->response->errorUnauthorized('验证码错误');
+        }
+
+        $tel = $captchaData['tel'];
+
 
         //如果是测试环境, 验证码是1234
         if (!app()->environment('production')) {
