@@ -110,4 +110,11 @@ class AuthorizationsController extends Controller
             'expires_in'   => \Auth::guard('api')->factory()->getTTL() * 60
         ]);
     }
+
+    //登出
+    public function destroy()
+    {
+        Auth::guard('api')->logout();
+        return $this->response->noContent();
+    }
 }
