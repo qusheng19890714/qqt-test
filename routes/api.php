@@ -34,7 +34,11 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api'], function($api){
         //第三方登录
         $api->post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')->name('api.socials.authorizations.store');
 
+        //登录
+        $api->post('authorizations', 'AuthorizationsController@store')->name('api.authorizations.store');
 
+        //删除token
+        $api->delete('authorizations/current', 'AuthorizationsController@destroy')->name('api.authorizations.destroy');
     });
 
 
