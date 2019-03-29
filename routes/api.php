@@ -43,11 +43,18 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>'seri
 
         // 需要 token 验证的接口
         $api->group(['middleware' => ['api.auth', 'token.refresh']], function($api) {
+
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')
                 ->name('api.user.show');
-        });
 
+            //上传图片
+            $api->post('images', 'ImagesController@store')
+                ->name('api.images.store');
+
+            //编辑用户信息
+            $api->patch('user', 'UsersController@update')->name('api.user.update');
+        });
 
     });
 
