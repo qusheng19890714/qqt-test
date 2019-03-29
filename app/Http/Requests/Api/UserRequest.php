@@ -24,7 +24,7 @@ class UserRequest extends FormRequest
     public function rules()
     {
 
-        switch($this-$this->method())
+        switch($this->method())
         {
             case 'POST' :
 
