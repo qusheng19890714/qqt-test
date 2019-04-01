@@ -40,6 +40,9 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>'seri
         //删除token
         $api->delete('authorizations/current', 'AuthorizationsController@destroy')->name('api.authorizations.destroy');
 
+        //查看分类
+        $api->get('categories', 'CategoriesController@index')->name('api.categories.index');
+
 
         // 需要 token 验证的接口
         $api->group(['middleware' => ['api.auth', 'token.refresh']], function($api) {
