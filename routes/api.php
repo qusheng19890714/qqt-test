@@ -57,6 +57,9 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>'seri
 
             //编辑用户信息
             $api->patch('user', 'UsersController@update')->name('api.user.update');
+
+            //发布话题
+            $api->post('topics', 'TopicsController@store')->name('api.topics.store');
         });
 
     });
