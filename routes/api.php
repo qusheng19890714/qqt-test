@@ -43,6 +43,11 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>['ser
         //查看分类
         $api->get('categories', 'CategoriesController@index')->name('api.categories.index');
 
+        //话题列表
+        $api->get('topics', 'TopicsController@index')->name('api.topics.index');
+
+        //某个用户的话题列表
+        $api->get('users/{user}/topics', 'TopicsController@userIndex')->name('api.users.topics.index');
 
         // 需要 token 验证的接口
         $api->group(['middleware' => ['api.auth', 'token.refresh']], function($api) {
@@ -66,6 +71,8 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>['ser
 
             //删除话题
             $api->delete('topics/{topic}', 'TopicsController@destroy')->name('api.topics.destroy');
+
+
         });
 
     });
