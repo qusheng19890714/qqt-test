@@ -89,6 +89,9 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>['ser
 
             //通知列表
             $api->get('user/notifications', 'NotificationsController@index')->name('api.user.notifications.index');
+
+            //通知统计
+            $api->get('user/notifications/stats', 'NotificationsController@stats')->name('api.user.notifications.stats');
         });
 
     });
