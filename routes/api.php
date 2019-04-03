@@ -92,6 +92,9 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>['ser
 
             //通知统计
             $api->get('user/notifications/stats', 'NotificationsController@stats')->name('api.user.notifications.stats');
+
+            //标记信息为已读
+            $api->patch('user/read/notifications', 'NotificationsController@read')->name('api.user.notifications.read');
         });
 
     });
