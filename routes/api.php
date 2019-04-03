@@ -58,6 +58,9 @@ $api->version('v1',['namespace'=>'App\Http\Controllers\Api', 'middleware'=>['ser
         //某个用户的回复列表
         $api->get('users/{user}/replies', 'RepliesController@userIndex')->name('api.users.replies.index');
 
+        $api->get('actived/users', 'UsersController@activedIndex')
+            ->name('api.actived.users.index');
+
         // 需要 token 验证的接口
         $api->group(['middleware' => ['api.auth', 'token.refresh']], function($api) {
 
