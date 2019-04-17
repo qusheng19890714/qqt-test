@@ -41,6 +41,7 @@
                             {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a href="{{ route('user_addresses.index') }}" class="dropdown-item">收货地址</a>
                             <a class="dropdown-item" href="{{route('users.show', Auth::id())}}">个人中心</a>
                             <a class="dropdown-item" href="{{route('users.edit', Auth::id())}}">编辑资料</a>
                             <div class="dropdown-divider"></div>

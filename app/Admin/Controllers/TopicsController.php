@@ -29,8 +29,9 @@ class TopicsController extends Controller
     {
 
         return $content
-            ->header('Index')
-            ->description('description')
+            ->header('话题列表')
+            ->description('话题列表')
+            ->breadcrumb(['text' => '话题管理'])
             ->body($this->grid());
     }
 
@@ -43,9 +44,11 @@ class TopicsController extends Controller
      */
     public function show($id, Content $content)
     {
+        $topic = Topic::find($id);
+
         return $content
-            ->header('Detail')
-            ->description('description')
+            ->header('话题详情')
+            ->description($topic->title)
             ->body($this->detail($id));
     }
 
@@ -159,16 +162,30 @@ class TopicsController extends Controller
     {
         $form = new Form(new Topic);
 
-        $form->text('title', 'Title');
-        $form->textarea('body', 'Body');
-        $form->number('user_id', 'User id');
-        $form->number('category_id', 'Category id');
-        $form->number('reply_count', 'Reply count');
-        $form->number('view_count', 'View count');
-        $form->number('last_reply_user_id', 'Last reply user id');
-        $form->number('order', 'Order');
-        $form->textarea('excerpt', 'Excerpt');
-        $form->text('slug', 'Slug');
+        $form->text('title', '话题标题');
+        $form->simditor('body', '话题内容');
+        $form->number('user_id', '作者')->disable();
+        //$form->number('category_id', '所属分类');
+
+        //获取所有分类
+        $categories = Category::all();
+
+        $options = [];
+
+        foreach ($categories as $category)
+        {
+            $options[$category->id] = $category->name;
+        }
+
+
+        $form->select('category_id', '话题分类')->options($options);
+
+        $form->number('reply_count', '回复数量');
+        $form->number('view_count', '浏览数量');
+        $form->number('last_reply_user_id', '最后回复人')->disable();
+        $form->number('order', '排序');
+        $form->textarea('excerpt', '摘要');
+        //$form->text('slug', 'Slug');
 
         return $form;
     }
